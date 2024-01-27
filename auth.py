@@ -1,4 +1,6 @@
-from app import db, bcrypt, User, Blueprint, render_template, request, flash, redirect, url_for, login_required, current_user
+from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask_login import login_user, logout_user, login_required, current_user
+from app import db, bcrypt, User
 
 auth = Blueprint('auth', __name__)
 
@@ -68,32 +70,33 @@ def new_password():
 
     if request.method == 'POST':
     # code to validate and add user to database goes here
-        name = request.form.get('name')
-        email = request.form.get('email')
         password = request.form.get('password')
+        newpassword = request.form.get('newpassword')
         confirm = request.form.get('confirm')
-
-        user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
         
-        if user: # if a user is found, we want to redirect back to signup page so user can try again
-            flash('That email is already registered.')
-            return redirect(url_for('auth.signup'))
-        
-        if not ( password == confirm ):
+        if not ( newpassword == confirm ):
             flash('Passwords must match.')
-            return redirect(url_for('auth.signup')) 
+            return redirect(url_for('auth.new_password')) 
+
+        # take the user-supplied password, hash it, and compare it to the hashed password in the database
+        if not bcrypt.check_password_hash( current_user.password, password ):
+            flash('Need original password to change it.')
+            return render_template('new_password.html')  # if the user doesn't exist or password is wrong, reload the page
 
         # create a new user with the form data. Hash the password so the plaintext version isn't saved.
         hash = bcrypt.generate_password_hash(password)
-        new_user = User(email=email, name=name, password=hash)
+        update_user = User.query.filter_by(id=current_user.id).one()
         
         # add the new user to the database
-        db.session.add(new_user)
+        update_user.password=hash
         db.session.commit()
                 
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('main.index'))
 
+    return render_template('new_password.html')
 
 @auth.route('/logout')
+@login_required
 def logout():
-    return 'logout'
+    logout_user()
+    return redirect(url_for('main.index'))

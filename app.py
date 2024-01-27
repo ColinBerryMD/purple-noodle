@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, request, flash, redirect, url_for 
-from flask_login import UserMixin, LoginManager, login_user, login_required, current_user
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_bcrypt import Bcrypt
