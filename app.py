@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, render_template, request, flash, redirect, url_for 
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
+
 from os import environ
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv, find_dotenv
@@ -11,6 +12,9 @@ load_dotenv(find_dotenv())
 
 app.config['SECRET_KEY'] = environ['WTF_SECRET']
 #app.config['SECRET_KEY'] = 'not_very_secret_key'
+
+app.config['GEOIPIFY_API_KEY'] = environ['GEOIPIFY_API_KEY']
+
 
 # uncomment this to use SQLite for development
 #basedir = os.path.abspath(os.path.dirname(__file__))
@@ -31,7 +35,6 @@ db_url = 'mysql+pymysql://privileged:'+db_password+'@localhost/purple_noodle'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 bcrypt = Bcrypt()
-
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 

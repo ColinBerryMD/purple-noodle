@@ -1,7 +1,29 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1 class="title">
-  Welcome, {{ name }}!
-</h1>
+    <h1>Location  for {{ name }} from IP data posted to database.</h1>
+    <table>
+        <tr>
+          <td>Latitude</td>
+          <td>{{ data.location.lat }}</td>
+        </tr>
+        <tr>
+          <td>Longitude</td>
+          <td>{{ data.location.lng }}</td>
+        </tr><tr>
+          <td>City</td>
+          <td>{{ data.location.city }}</td>
+        </tr>
+        <tr>
+          <td>State</td>
+          <td>{{ data.location.region }}</td>
+        </tr>
+        <tr>
+          <td>Server</td>
+          <td>{{ data.isp }}</td>
+        </tr>
+        <tr>
+          <td>IP</td>
+          <td>{{ data.ip }}</td>
+        </tr>
+    </table>
 {% endblock %}
